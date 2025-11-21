@@ -41,7 +41,7 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection (graceful if env missing)
-const mongoUri = 'mongodb+srv://alvirebal123_db_user:f2LEQ3QaLt8pQqXn@cluster0.nereze5.mongodb.net/jobsite?retryWrites=true&w=majority&appName=Cluster0';
+const mongoUri = process.env.MONGODB_URI;
 let isDbConnected = false;
 
 if (mongoUri) {
