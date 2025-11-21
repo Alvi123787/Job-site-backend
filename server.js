@@ -43,35 +43,25 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // MongoDB connection (graceful if env missing)
 const mongoUri = 'mongodb+srv://alvirebal123_db_user:f2LEQ3QaLt8pQqXn@cluster0.nereze5.mongodb.net/jobsite?retryWrites=true&w=majority&appName=Cluster0';
 let isDbConnected = false;
-let initPromise = null;
 
-async function ensureDb() {
-  try {
-    if (mongoose.connection?.readyState === 1) return true;
-    if (!initPromise) {
-      initPromise = mongoose.connect(mongoUri)
-        .then(() => {
-          isDbConnected = true;
-          console.log('MongoDB connected');
-          return true;
-        })
-        .catch((err) => {
-          isDbConnected = false;
-          initPromise = null;
-          console.error('MongoDB connection error:', err.message);
-          return false;
-        });
-    }
-    return await initPromise;
-  } catch (_) {
-    return false;
-  }
+if (mongoUri) {
+  mongoose
+    .connect(mongoUri)
+    .then(() => {
+      isDbConnected = true;
+      console.log('MongoDB connected');
+    })
+    .catch((err) => {
+      isDbConnected = false;
+      console.error('MongoDB connection error:', err.message);
+    });
+} else {
+  console.warn('MONGODB_URI not set. Proceeding without database connection.');
 }
 
 // Health route
-app.get('/', async (_req, res) => {
-  const ok = await ensureDb();
-  res.json({ status: 'ok', db: ok ? 'connected' : 'not_connected' });
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', db: isDbConnected ? 'connected' : 'not_connected' });
 });
 
 // Contact API
@@ -106,10 +96,8 @@ app.use('/api/user', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/about', aboutRoutes);
 
-if (!process.env.VERCEL) {
-  app.listen(port, () => {
-    console.log(`Backend server listening on port ${port}`);
-  });
-}
+app.listen(port, () => {
+  console.log(`Backend server listening on port ${port}`);
+});
 
 export default app;
