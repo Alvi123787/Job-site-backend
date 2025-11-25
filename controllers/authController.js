@@ -5,7 +5,14 @@ import User from '../models/User.js';
 import transporter from '../config/mailer.js';
 
 const JWT_SECRET = 'supersecret_jwt_key_change_me';
-const FRONTEND_URL = 'http://localhost:5175';
+const SITE_NAME = 'Job Box';
+const LIVE_FRONTEND_URL = 'https://job-box.netlify.app';
+function frontendBase(req) {
+  const o = String(req.headers?.origin || '').trim();
+  const isHttp = /^https?:\/\//i.test(o);
+  const isLocal = /localhost|127\.0\.0\.1/i.test(o);
+  return isHttp && !isLocal ? o : LIVE_FRONTEND_URL;
+}
 
 export const signup = async (req, res) => {
   try {
@@ -68,11 +75,11 @@ export const signup = async (req, res) => {
       await transporter.sendMail({
         from: 'alvirebal123@gmail.com',
         to: user.email,
-        subject: 'Welcome to CareerHub',
+        subject: `Welcome to ${SITE_NAME}`,
         html: `
           <p>Hello ${user.name},</p>
-          <p>Welcome to CareerHub! Your profile has been created with the role <strong>${role}</strong>.</p>
-          <p>You can manage your profile here: <a href="${FRONTEND_URL}/profile">${FRONTEND_URL}/profile</a></p>
+          <p>Welcome to ${SITE_NAME}! Your profile has been created with the role <strong>${role}</strong>.</p>
+          <p>You can manage your profile here: <a href="${frontendBase(req)}/profile">${frontendBase(req)}/profile</a></p>
           <p>Happy exploring!</p>
         `,
       });
@@ -133,7 +140,7 @@ export const forgotPassword = async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     await user.save();
 
-    const resetUrl = `${FRONTEND_URL}/reset-password/${token}`;
+    const resetUrl = `${frontendBase(req)}/reset-password/${token}`;
     await transporter.sendMail({
       from: 'alvirebal123@gmail.com',
       to: user.email,
