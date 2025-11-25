@@ -32,9 +32,9 @@ export const createJob = async (req, res) => {
     // Build JSON-LD before create so it persists with the document
     try {
       const site = {
-        name: process.env.SITE_NAME || 'MySite',
-        url: process.env.SITE_URL || 'https://example.com',
-        logo: process.env.SITE_LOGO || undefined,
+        name: 'CareerHub',
+        url: 'http://localhost:5175',
+        logo: undefined,
       };
       const dto = {
         ...payload,
@@ -70,7 +70,7 @@ export const createJob = async (req, res) => {
           ],
         }).lean();
         if (subs && subs.length) {
-          const FRONTEND_BASE = process.env.FRONTEND_BASE || 'http://localhost:5174';
+          const FRONTEND_BASE = 'http://localhost:5175';
           const jobUrl = `${FRONTEND_BASE}/jobs/${job._id}`;
           const subject = `New Job Posted: ${job.title} at ${job.company}`;
 
@@ -114,12 +114,12 @@ export const createJob = async (req, res) => {
             .map(s => s?.email)
             .filter(Boolean)
             .map((to) => transporter.sendMail({
-              from: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
-              to,
-              subject,
-              text: lines.join('\n'),
-              html,
-            }));
+            from: 'alvirebal123@gmail.com',
+            to,
+            subject,
+            text: lines.join('\n'),
+            html,
+          }));
 
           // Do not block job creation; log failures
           const results = await Promise.allSettled(sends);

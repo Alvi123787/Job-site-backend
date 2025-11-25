@@ -1,12 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-// Load environment variables BEFORE importing any route modules that read them
-dotenv.config();
 
 // Import modules that do not depend on env directly
 import transporter from './config/mailer.js';
@@ -24,7 +20,7 @@ const analyticsRoutes = (await import('./routes/analyticsRoutes.js')).default;
 const aboutRoutes = (await import('./routes/aboutRoutes.js')).default;
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -40,8 +36,8 @@ app.use(express.json());
 // Serve uploaded static files (avatars, etc.)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// MongoDB connection (graceful if env missing)
-const mongoUri = process.env.MONGODB_URI;
+// MongoDB connection
+const mongoUri = 'mongodb+srv://alvirebal123_db_user:f2LEQ3QaLt8pQqXn@cluster0.nereze5.mongodb.net/jobsite?retryWrites=true&w=majority&appName=Cluster0';
 let isDbConnected = false;
 
 if (mongoUri) {
@@ -55,8 +51,6 @@ if (mongoUri) {
       isDbConnected = false;
       console.error('MongoDB connection error:', err.message);
     });
-} else {
-  console.warn('MONGODB_URI not set. Proceeding without database connection.');
 }
 
 // Health route
@@ -71,8 +65,8 @@ app.use('/api/contact', contactRoute);
 app.get('/api/test-mail', async (_req, res) => {
   try {
     await transporter.sendMail({
-      from: process.env.ADMIN_EMAIL,
-      to: process.env.ADMIN_EMAIL,
+      from: 'alvirebal123@gmail.com',
+      to: 'alvirebal123@gmail.com',
       subject: 'Test Mail',
       text: 'Hello! This is a test from global Nodemailer setup.',
     });

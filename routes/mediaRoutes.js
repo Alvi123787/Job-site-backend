@@ -47,7 +47,7 @@ router.get('/image-proxy', async (req, res) => {
   }
 
   try {
-    const timeoutMs = Math.max(2000, Math.min(15000, Number(process.env.IMAGE_PROXY_TIMEOUT || 6000)));
+    const timeoutMs = Math.max(2000, Math.min(15000, 6000));
     const signal = (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function')
       ? AbortSignal.timeout(timeoutMs)
       : undefined;

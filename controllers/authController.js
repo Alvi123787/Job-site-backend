@@ -4,8 +4,8 @@ import crypto from 'crypto';
 import User from '../models/User.js';
 import transporter from '../config/mailer.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5175';
+const JWT_SECRET = 'supersecret_jwt_key_change_me';
+const FRONTEND_URL = 'http://localhost:5175';
 
 export const signup = async (req, res) => {
   try {
@@ -66,7 +66,7 @@ export const signup = async (req, res) => {
     // Optional: send welcome email (non-blocking). Failures don’t block signup.
     try {
       await transporter.sendMail({
-        from: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+        from: 'alvirebal123@gmail.com',
         to: user.email,
         subject: 'Welcome to CareerHub',
         html: `
@@ -135,7 +135,7 @@ export const forgotPassword = async (req, res) => {
 
     const resetUrl = `${FRONTEND_URL}/reset-password/${token}`;
     await transporter.sendMail({
-      from: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+      from: 'alvirebal123@gmail.com',
       to: user.email,
       subject: 'Password Reset Request',
       html: `

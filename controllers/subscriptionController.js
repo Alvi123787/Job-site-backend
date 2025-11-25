@@ -47,7 +47,7 @@ export const subscribe = async (req, res) => {
       try {
         await transporter.sendMail({
           to: sub.email,
-          from: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+          from: 'alvirebal123@gmail.com',
           subject: type === 'blog' ? 'Welcome to Blog Alerts!' : 'Welcome to Job Alerts!',
           html: `
             <div style="font-family:Arial,sans-serif;line-height:1.6;color:#0f172a">

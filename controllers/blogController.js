@@ -34,7 +34,7 @@ export const createBlog = async (req, res) => {
       try {
         const subs = await Subscription.find({ unsubscribed: { $ne: true }, types: 'blog' }).lean();
         if (subs && subs.length) {
-          const FRONTEND_BASE = process.env.FRONTEND_BASE || 'http://localhost:5174';
+          const FRONTEND_BASE = 'http://localhost:5175';
           const blogUrl = `${FRONTEND_BASE}/blog/${blog._id}`;
           const subject = `New Blog Posted: ${blog.title}`;
           const imageUrl = String(blog.image || '').trim();
@@ -55,7 +55,7 @@ export const createBlog = async (req, res) => {
             .map(s => s?.email)
             .filter(Boolean)
             .map((to) => transporter.sendMail({
-              from: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+              from: 'alvirebal123@gmail.com',
               to,
               subject,
               text: `${blog.title}\n\n${shortDesc}\n\nRead: ${blogUrl}`,

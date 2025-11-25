@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
     // Send notification email to site owner (admin)
     await transporter.sendMail({
       from: `"${fullName}" <${email}>`,
-      to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+      to: 'alvirebal123@gmail.com',
       replyTo: email,
       subject,
       html: `
