@@ -13,6 +13,7 @@ const subscriptionRoutes = (await import('./routes/subscriptionRoutes.js')).defa
 const mediaRoutes = (await import('./routes/mediaRoutes.js')).default;
 const blogRoutes = (await import('./routes/blogRoutes.js')).default;
 const companyRoutes = (await import('./routes/companyRoutes.js')).default;
+const categoryRoutes = (await import('./routes/categoryRoutes.js')).default;
 const contactRoute = (await import('./routes/contact.js')).default;
 const authRoutes = (await import('./routes/authRoutes.js')).default;
 const userRoutes = (await import('./routes/userRoutes.js')).default;
@@ -85,6 +86,7 @@ app.use('/api/subscribe', subscriptionRoutes);
 app.use('/api/assets', mediaRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/companies', companyRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/analytics', analyticsRoutes);

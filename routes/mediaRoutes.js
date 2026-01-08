@@ -12,7 +12,8 @@ const __dirname = path.dirname(__filename);
 // Ensure uploads directory exists
 const uploadsRoot = path.join(__dirname, '..', 'uploads');
 const avatarDir = path.join(uploadsRoot, 'avatars');
-for (const dir of [uploadsRoot, avatarDir]) {
+const categoryDir = path.join(uploadsRoot, 'categories');
+for (const dir of [uploadsRoot, avatarDir, categoryDir]) {
   try {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   } catch (e) {
@@ -21,11 +22,15 @@ for (const dir of [uploadsRoot, avatarDir]) {
 }
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, avatarDir),
+  destination: (req, _file, cb) => {
+    const kind = String(req.query?.kind || '').toLowerCase();
+    if (kind === 'category') cb(null, categoryDir);
+    else cb(null, avatarDir);
+  },
   filename: (_req, file, cb) => {
     const safeBase = Date.now().toString(36);
     const ext = path.extname(file.originalname || '').toLowerCase() || '.png';
-    cb(null, `avatar-${safeBase}${ext}`);
+    cb(null, `upload-${safeBase}${ext}`);
   },
 });
 
@@ -118,6 +123,21 @@ router.post('/upload/avatar', requireAuth, (req, res) => {
     }
     // Public URL served by Express static under /uploads
     const publicUrl = `/uploads/avatars/${req.file.filename}`;
+    return res.json({ url: publicUrl });
+  });
+});
+
+// Public category image upload (no auth; used by job form category section)
+router.post('/upload/category', (req, res) => {
+  upload.single('image')(req, res, async (err) => {
+    if (err) {
+      console.error('category upload error', err);
+      return res.status(400).json({ error: err.message || 'Upload failed' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    const publicUrl = `/uploads/categories/${req.file.filename}`;
     return res.json({ url: publicUrl });
   });
 });
